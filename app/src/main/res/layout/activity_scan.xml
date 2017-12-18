@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="20dp"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
+    android:paddingTop="20dp"
+    tools:context=".ScanActivity">
+
+    <Button
+        android:id="@+id/default_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:text="默认扫描" />
+
+    <Button
+        android:id="@+id/wechat_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/default_start"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="微信扫描" />
+
+    <Button
+        android:id="@+id/alipay_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/wechat_start"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="AR 扫描" />
+
+    <Button
+        android:id="@+id/create_code"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/alipay_start"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="创建二维码" />
+</RelativeLayout>
