@@ -73,7 +73,7 @@ public class BaseShareActivity extends Activity {
     public Bitmap bookMarkBitmap;
     public Bitmap contactsBitmap;
 
-    public String content;
+    public String textContent;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -179,13 +179,8 @@ public class BaseShareActivity extends Activity {
     /**
      * 分享剪切板
      */
-    public Bitmap shareClipboard() {
-        // Should always be true, because we grey out the clipboard button in onResume() if it's empty
-        CharSequence text = ClipboardInterface.getText(BaseShareActivity.this);
-        if (text == null) {
-            return null;
-        }
-        return shareText(text.toString());
+    public Bitmap shareClipboard(String text) {
+        return shareText(text);
     }
 
     /**
@@ -231,7 +226,7 @@ public class BaseShareActivity extends Activity {
         appBitmap = null;
         bookMarkBitmap = null;
         contactsBitmap = null;
-        content = null;
+        textContent = null;
     }
 
     public Bitmap shareText(String text) {
@@ -384,7 +379,7 @@ public class BaseShareActivity extends Activity {
             // 获取文本信息并显示
             if (intent.getBooleanExtra(Intents.Encode.SHOW_CONTENTS, true)) {
                 // 文本内容
-                content = qrCodeEncoder.getDisplayContents();
+                textContent = qrCodeEncoder.getDisplayContents();
 //                setTitle(qrCodeEncoder.getTitle());
             } else {
 //                setTitle("");
