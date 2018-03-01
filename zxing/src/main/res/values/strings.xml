@@ -2,4 +2,11 @@
 <resources>
     <string name="app_name">Lucky</string>
 
+    <string name="contents_contact">联系人信息</string>
+    <string name="contents_email">E-mail 地址</string>
+    <string name="contents_location">经纬度</string>
+    <string name="contents_phone">电话号码</string>
+    <string name="contents_sms">短信号码</string>
+    <string name="contents_text">纯文本</string>
+
 </resources>

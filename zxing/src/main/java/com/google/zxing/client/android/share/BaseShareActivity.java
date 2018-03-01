@@ -9,6 +9,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,13 +18,19 @@ import android.provider.BaseColumns;
 import android.provider.ContactsContract;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.Display;
+import android.view.WindowManager;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.R;
+import com.google.zxing.WriterException;
 import com.google.zxing.client.android.Contents;
 import com.google.zxing.client.android.Intents;
 import com.google.zxing.client.android.clipboard.ClipboardInterface;
+import com.google.zxing.client.android.encode.QRCodeEncoder;
 import com.google.zxing.client.android.utils.PermissionUtil;
+
+import java.util.regex.Pattern;
 
 /**
  * @author Cazaea
@@ -56,6 +64,16 @@ public class BaseShareActivity extends Activity {
     private static final int PICK_CONTACT = 1;
     private static final int PICK_APP = 2;
 
+    private QRCodeEncoder qrCodeEncoder;
+    private static final int MAX_BARCODE_FILENAME_LENGTH = 24;
+    private static final Pattern NOT_ALPHANUMERIC = Pattern.compile("[^A-Za-z0-9]");
+    private static final String USE_VCARD_KEY = "USE_VCARD";
+
+    public Bitmap appBitmap;
+    public Bitmap bookMarkBitmap;
+    public Bitmap contactsBitmap;
+
+    public String content;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,7 +81,7 @@ public class BaseShareActivity extends Activity {
     }
 
     /**
-     * 判断联系人权限是否开启
+     * 判断联系人权限是否开启(Android6.0只收需要手动获取)
      */
     public boolean judgeContactAuthority() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -115,7 +133,8 @@ public class BaseShareActivity extends Activity {
             intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
             Uri uri = Uri.fromParts(SCHEME, packageName, null);
             intent.setData(uri);
-        } else { // 2.3以下，使用非公开的接口（查看InstalledAppDetails源码）
+        } else {
+            // 2.3以下，使用非公开的接口（查看InstalledAppDetails源码）
             // 2.2和2.1中，InstalledAppDetails使用的APP_PKG_NAME不同。
             final String appPkgName = (apiLevel == 8 ? APP_PKG_NAME_22
                     : APP_PKG_NAME_21);
@@ -146,7 +165,6 @@ public class BaseShareActivity extends Activity {
         }
         Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
         startActivityForResult(intent, PICK_CONTACT);
-
     }
 
     /**
@@ -161,59 +179,71 @@ public class BaseShareActivity extends Activity {
     /**
      * 分享剪切板
      */
-    public void shareClipboard() {
+    public Bitmap shareClipboard() {
         // Should always be true, because we grey out the clipboard button in onResume() if it's empty
         CharSequence text = ClipboardInterface.getText(BaseShareActivity.this);
-        if (text != null) {
-            shareText(text.toString());
+        if (text == null) {
+            return null;
         }
+        return shareText(text.toString());
     }
 
     /**
      * 文字生成二维码
-     *
-     * @param text
+     * <p>
+     * //     * @param text
      */
-    public void shareText(String text) {
-        Intent intent = new Intent(Intents.Encode.ACTION);
-        intent.putExtra(Intents.Encode.TYPE, Contents.Type.TEXT);
-        intent.putExtra(Intents.Encode.DATA, text);
-        intent.putExtra(Intents.Encode.FORMAT, BarcodeFormat.QR_CODE.toString());
-        startActivity(intent);
-    }
-
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        clipboardButton.setEnabled(ClipboardInterface.hasText(this));
+//    public Bitmap shareText(String text) {
+//        if (text == null) {
+//            return null; // Show error?
+//        }
+//        Intent intent = new Intent("com.google.zxing.client.android.ENCODE");
+//        intent.putExtra(Intents.Encode.TYPE, Contents.Type.TEXT);
+//        intent.putExtra(Intents.Encode.DATA, text);
+//        intent.putExtra(Intents.Encode.FORMAT, BarcodeFormat.QR_CODE.toString());
+//        return createQRCode(intent);
 //    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case PICK_BOOKMARK:
+                    bookMarkBitmap = shareText(intent.getStringExtra("url"));
+                    break;
                 case PICK_APP:
-                    showTextAsBarcode(intent.getStringExtra("url")); // Browser.BookmarkColumns.URL
+                    // Browser.BookmarkColumns.URL
+                    appBitmap = shareText(intent.getStringExtra("url"));
+//                    createQRCodeCallBack.shareAPPOrBookMark();
                     break;
                 case PICK_CONTACT:
                     // Data field is content://contacts/people/984
-                    showContactAsBarcode(intent.getData());
+                    contactsBitmap = showContactAsBarcode(intent.getData());
+//                    createQRCodeCallBack.shareContacts();
                     break;
             }
         }
     }
 
-    private void showTextAsBarcode(String text) {
+    /**
+     * Bitmap对象置为空
+     */
+    private void resetInfo() {
+        appBitmap = null;
+        bookMarkBitmap = null;
+        contactsBitmap = null;
+        content = null;
+    }
+
+    public Bitmap shareText(String text) {
         Log.i(TAG, "Showing text as barcode: " + text);
         if (text == null) {
-            return; // Show error?
+            return null; // Show error?
         }
         Intent intent = new Intent(Intents.Encode.ACTION);
         intent.putExtra(Intents.Encode.TYPE, Contents.Type.TEXT);
         intent.putExtra(Intents.Encode.DATA, text);
         intent.putExtra(Intents.Encode.FORMAT, BarcodeFormat.QR_CODE.toString());
-        startActivity(intent);
+        return createQRCode(intent);
     }
 
     /**
@@ -222,10 +252,10 @@ public class BaseShareActivity extends Activity {
      *
      * @param contactUri A Uri of the form content://contacts/people/17
      */
-    private void showContactAsBarcode(Uri contactUri) {
+    private Bitmap showContactAsBarcode(Uri contactUri) {
         Log.i(TAG, "Showing contact URI as barcode: " + contactUri);
         if (contactUri == null) {
-            return; // Show error?
+            return null; // Show error?
         }
         ContentResolver resolver = getContentResolver();
 
@@ -234,7 +264,7 @@ public class BaseShareActivity extends Activity {
         boolean hasPhone;
         try (Cursor cursor = resolver.query(contactUri, null, null, null, null)) {
             if (cursor == null || !cursor.moveToFirst()) {
-                return;
+                return null;
             }
             id = cursor.getString(cursor.getColumnIndex(BaseColumns._ID));
             name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
@@ -307,8 +337,7 @@ public class BaseShareActivity extends Activity {
         intent.putExtra(Intents.Encode.DATA, bundle);
         intent.putExtra(Intents.Encode.FORMAT, BarcodeFormat.QR_CODE.toString());
 
-        Log.i(TAG, "Sending bundle for encoding: " + bundle);
-        startActivity(intent);
+        return createQRCode(intent);
     }
 
     private static String massageContactData(String data) {
@@ -321,6 +350,52 @@ public class BaseShareActivity extends Activity {
             data = data.replace("\r", " ");
         }
         return data;
+    }
+
+    /**
+     * 生成二维码
+     */
+    private Bitmap createQRCode(Intent intent) {
+
+        resetInfo();
+
+        // This assumes the view is full screen, which is a good assumption
+        WindowManager manager = (WindowManager) getSystemService(WINDOW_SERVICE);
+        Display display = manager.getDefaultDisplay();
+        Point displaySize = new Point();
+        display.getSize(displaySize);
+        int width = displaySize.x;
+        int height = displaySize.y;
+        int smallerDimension = width < height ? width : height;
+        smallerDimension = smallerDimension * 7 / 8;
+
+        Bitmap bitmap;
+
+        try {
+            boolean useVCard = intent.getBooleanExtra(USE_VCARD_KEY, false);
+            qrCodeEncoder = new QRCodeEncoder(this, intent, smallerDimension, useVCard);
+            bitmap = qrCodeEncoder.encodeAsBitmap();
+            if (bitmap == null) {
+                Log.w(TAG, "Could not encode barcode");
+                qrCodeEncoder = null;
+                return null;
+            }
+
+            // 获取文本信息并显示
+            if (intent.getBooleanExtra(Intents.Encode.SHOW_CONTENTS, true)) {
+                // 文本内容
+                content = qrCodeEncoder.getDisplayContents();
+//                setTitle(qrCodeEncoder.getTitle());
+            } else {
+//                setTitle("");
+            }
+        } catch (WriterException e) {
+            Log.w(TAG, "Could not encode barcode", e);
+            qrCodeEncoder = null;
+            bitmap = null;
+        }
+
+        return bitmap;
     }
 
 }

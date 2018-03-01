@@ -43,6 +43,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <!-- ******************************二维码扫描相关**************************** -->
         <activity android:name=".ScanActivity"
             android:screenOrientation="portrait">

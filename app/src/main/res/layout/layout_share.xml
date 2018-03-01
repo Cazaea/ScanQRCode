@@ -1,79 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:gravity="center">
 
     <!-- Must wrap the rest in one layout -->
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical"
         android:padding="@dimen/standard_padding">
 
-        <LinearLayout
-            android:layout_width="fill_parent"
+        <ImageView
+            android:id="@+id/my_qrcode"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:src="@mipmap/ic_launcher" />
+
+        <TextView
+            android:id="@+id/contents_text_view"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingBottom="@dimen/standard_padding">
-
-            <Button
-                android:id="@+id/btn_share_app"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="分享应用" />
-
-            <Button
-                android:id="@+id/btn_share_bookmark"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="分享书签" />
-
-        </LinearLayout>
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:textColor="@color/colorMainBlue"
+            android:textSize="12sp" />
 
         <LinearLayout
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingBottom="@dimen/standard_padding">
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="@dimen/standard_padding">
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/standard_padding">
+
+                <Button
+                    android:id="@+id/btn_share_app"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="分享应用" />
+
+                <Button
+                    android:id="@+id/btn_share_bookmark"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="分享书签" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/standard_padding">
+
+                <Button
+                    android:id="@+id/btn_share_contact"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="分享联系人" />
+
+                <Button
+                    android:id="@+id/btn_share_clipboard"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="分享剪切板" />
+
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/share_text_view"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:hint="键入一些文字，点击[前往/开始]生成二维码"
+                android:imeOptions="actionGo"
+                android:padding="5dp"
+                android:selectAllOnFocus="true"
+                android:singleLine="true"
+                android:textSize="12sp" />
 
             <Button
-                android:id="@+id/btn_share_contact"
-                android:layout_width="wrap_content"
+                android:id="@+id/btn_share_text"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="分享联系人" />
-
-            <Button
-                android:id="@+id/btn_share_clipboard"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="分享剪切板" />
+                android:text="生成二维码" />
 
         </LinearLayout>
-
-        <EditText
-            android:id="@+id/share_text_view"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:hint="键入一些文字，点击[前往/开始]生成二维码"
-            android:imeOptions="actionGo"
-            android:padding="5dp"
-            android:selectAllOnFocus="true"
-            android:singleLine="true" />
-
-        <Button
-            android:id="@+id/btn_share_text"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="将文字转换成二维码" />
 
     </LinearLayout>
 </ScrollView>

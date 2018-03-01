@@ -5,6 +5,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.zxing.client.android.clipboard.ClipboardInterface;
@@ -34,6 +35,10 @@ public class ShareActivity extends BaseShareActivity implements View.OnKeyListen
     EditText shareTextView;
     @BindView(R.id.btn_share_text)
     Button btnShareText;
+    @BindView(R.id.my_qrcode)
+    ImageView myQrcode;
+    @BindView(R.id.contents_text_view)
+    TextView contentsTextView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,16 +52,29 @@ public class ShareActivity extends BaseShareActivity implements View.OnKeyListen
     protected void onResume() {
         super.onResume();
         btnShareClipboard.setEnabled(ClipboardInterface.hasText(this));
+        if (contactsBitmap != null) {
+            myQrcode.setImageBitmap(contactsBitmap);
+        }
+        if (bookMarkBitmap != null) {
+            myQrcode.setImageBitmap(bookMarkBitmap);
+        }
+        if (appBitmap != null) {
+            myQrcode.setImageBitmap(appBitmap);
+        }
+        if (content != null && !content.isEmpty())
+            contentsTextView.setText(content);
     }
 
     @OnClick(R.id.btn_share_app)
     public void onBtnShareAppClicked() {
         shareAPP();
+
     }
 
     @OnClick(R.id.btn_share_bookmark)
     public void onBtnShareBookmarkClicked() {
         shareBookMark();
+
     }
 
     @OnClick(R.id.btn_share_contact)
@@ -66,14 +84,15 @@ public class ShareActivity extends BaseShareActivity implements View.OnKeyListen
 
     @OnClick(R.id.btn_share_clipboard)
     public void onBtnShareClipboardClicked() {
-        shareClipboard();
+        myQrcode.setImageBitmap(shareClipboard());
     }
 
     @OnClick(R.id.btn_share_text)
     public void onBtnShareTextClicked() {
         String text = shareTextView.getText().toString();
-        if (!text.isEmpty()){
-            shareText(text);
+        if (!text.isEmpty()) {
+            myQrcode.setImageBitmap(shareText(text));
+            contentsTextView.setText(text);
         }
     }
 
@@ -82,7 +101,8 @@ public class ShareActivity extends BaseShareActivity implements View.OnKeyListen
         if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
             String text = ((TextView) view).getText().toString();
             if (!text.isEmpty()) {
-                shareText(text);
+                myQrcode.setImageBitmap(shareText(text));
+                contentsTextView.setText(text);
             }
             return true;
         }
