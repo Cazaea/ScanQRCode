@@ -240,7 +240,6 @@ public abstract class BaseCaptureActivity extends Activity implements SurfaceHol
 
     private void displayFrameworkBugMessageAndExit() {
 
-
         if (Build.VERSION.SDK_INT >= 23) {
             // 权限申请
             if (BaseCaptureActivity.this.checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
