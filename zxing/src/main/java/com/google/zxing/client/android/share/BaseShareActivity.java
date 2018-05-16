@@ -185,19 +185,19 @@ public class BaseShareActivity extends Activity {
 
     /**
      * 文字生成二维码
-     * <p>
-     * //     * @param text
      */
-//    public Bitmap shareText(String text) {
-//        if (text == null) {
-//            return null; // Show error?
-//        }
-//        Intent intent = new Intent("com.google.zxing.client.android.ENCODE");
-//        intent.putExtra(Intents.Encode.TYPE, Contents.Type.TEXT);
-//        intent.putExtra(Intents.Encode.DATA, text);
-//        intent.putExtra(Intents.Encode.FORMAT, BarcodeFormat.QR_CODE.toString());
-//        return createQRCode(intent);
-//    }
+    public Bitmap shareText(String text) {
+        Log.i(TAG, "Showing text as barcode: " + text);
+        if (text == null) {
+            return null; // Show error?
+        }
+        Intent intent = new Intent(Intents.Encode.ACTION);
+        intent.putExtra(Intents.Encode.TYPE, Contents.Type.TEXT);
+        intent.putExtra(Intents.Encode.DATA, text);
+        intent.putExtra(Intents.Encode.FORMAT, BarcodeFormat.QR_CODE.toString());
+        return createQRCode(intent);
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (resultCode == RESULT_OK) {
@@ -227,18 +227,6 @@ public class BaseShareActivity extends Activity {
         bookMarkBitmap = null;
         contactsBitmap = null;
         textContent = null;
-    }
-
-    public Bitmap shareText(String text) {
-        Log.i(TAG, "Showing text as barcode: " + text);
-        if (text == null) {
-            return null; // Show error?
-        }
-        Intent intent = new Intent(Intents.Encode.ACTION);
-        intent.putExtra(Intents.Encode.TYPE, Contents.Type.TEXT);
-        intent.putExtra(Intents.Encode.DATA, text);
-        intent.putExtra(Intents.Encode.FORMAT, BarcodeFormat.QR_CODE.toString());
-        return createQRCode(intent);
     }
 
     /**
@@ -362,7 +350,7 @@ public class BaseShareActivity extends Activity {
         int width = displaySize.x;
         int height = displaySize.y;
         int smallerDimension = width < height ? width : height;
-        smallerDimension = smallerDimension * 7 / 8;
+//        smallerDimension = smallerDimension * 7 / 8;
 
         Bitmap bitmap;
 
