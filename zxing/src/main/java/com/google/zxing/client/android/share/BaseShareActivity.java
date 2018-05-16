@@ -356,7 +356,7 @@ public class BaseShareActivity extends Activity {
 
         try {
             boolean useVCard = intent.getBooleanExtra(USE_VCARD_KEY, false);
-            qrCodeEncoder = new QRCodeEncoder(this, intent, smallerDimension, useVCard);
+            qrCodeEncoder = new QRCodeEncoder(this, intent, smallerDimension, false);
             bitmap = qrCodeEncoder.encodeAsBitmap();
             if (bitmap == null) {
                 Log.w(TAG, "Could not encode barcode");
