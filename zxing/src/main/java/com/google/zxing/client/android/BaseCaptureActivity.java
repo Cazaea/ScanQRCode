@@ -1,7 +1,6 @@
 package com.google.zxing.client.android;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -18,6 +17,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -39,7 +39,7 @@ import java.util.Map;
  * Created by yangxixi on 16/11/21.
  */
 
-public abstract class BaseCaptureActivity extends Activity implements SurfaceHolder.Callback {
+public abstract class BaseCaptureActivity extends AppCompatActivity implements SurfaceHolder.Callback {
 
     private static final String TAG = BaseCaptureActivity.class.getSimpleName();
 

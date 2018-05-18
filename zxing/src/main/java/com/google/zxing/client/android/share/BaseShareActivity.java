@@ -1,7 +1,6 @@
 package com.google.zxing.client.android.share;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -17,6 +16,7 @@ import android.os.Bundle;
 import android.provider.BaseColumns;
 import android.provider.ContactsContract;
 import android.provider.Settings;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
@@ -26,7 +26,6 @@ import com.google.zxing.R;
 import com.google.zxing.WriterException;
 import com.google.zxing.client.android.Contents;
 import com.google.zxing.client.android.Intents;
-import com.google.zxing.client.android.clipboard.ClipboardInterface;
 import com.google.zxing.client.android.encode.QRCodeEncoder;
 import com.google.zxing.client.android.utils.PermissionUtil;
 
@@ -38,7 +37,7 @@ import java.util.regex.Pattern;
  * @mail wistorm@sina.com
  */
 
-public class BaseShareActivity extends Activity {
+public class BaseShareActivity extends AppCompatActivity {
 
     private static final String TAG = BaseShareActivity.class.getSimpleName();
 
